@@ -44,39 +44,66 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
         children: [
           const SizedBox(
             height: 24,
           ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: TextField(
-              controller: _emailControllers,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-              ),
-              style: const TextStyle(color: Colors.white),
+          const Center(
+            child: Text(
+              'Welcome Back!',
+              style: TextStyle(fontSize: 24),
             ),
           ),
           const SizedBox(
-            height: 12,
+            height: 24,
           ),
-          TextField(
-            controller: _passwordControllers,
-            decoration: const InputDecoration(labelText: 'Password'),
-            style: const TextStyle(color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _emailControllers,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                labelText: 'Email',
+                labelStyle: TextStyle(fontSize: 14),
+                isDense: true,
+                border: InputBorder.none,
+              ),
+              style: const TextStyle(color: Colors.black),
+            ),
+          ),
+          const SizedBox(
+            height: 18,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _passwordControllers,
+              decoration: const InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: TextStyle(fontSize: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                  isDense: true,
+                  border: InputBorder.none),
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
           const SizedBox(
             height: 24,
           ),
           ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Colors.black)),
               onPressed: login,
               child: const Text(
                 "Login",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.white),
               )),
           const SizedBox(
             height: 12,
@@ -87,13 +114,13 @@ class _LoginPageState extends State<LoginPage> {
             child: const Center(
               child: Text(
                 "Don't have an account? Sign Up",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.black),
               ),
             ),
           )
         ],
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
     );
   }
 }

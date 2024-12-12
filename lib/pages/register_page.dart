@@ -51,61 +51,107 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
-          color: Colors.white,
+          color: Colors.black,
           size: 20,
         ),
         title: const Text(
           "Sign Up",
-          style: TextStyle(color: Colors.white, fontSize: 20),
+          style: TextStyle(color: Colors.black, fontSize: 20),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         children: [
-          TextField(
-            controller: _usernameControllers,
-            decoration: const InputDecoration(labelText: 'Username'),
-            style: const TextStyle(color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _usernameControllers,
+              decoration: const InputDecoration(
+                  labelText: 'Username',
+                  labelStyle: TextStyle(fontSize: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                  isDense: true,
+                  border: InputBorder.none),
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
           const SizedBox(
-            height: 12,
+            height: 18,
           ),
-          TextField(
-            controller: _emailControllers,
-            decoration: const InputDecoration(labelText: 'Email'),
-            style: const TextStyle(color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _emailControllers,
+              decoration: const InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: TextStyle(fontSize: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                  isDense: true,
+                  border: InputBorder.none),
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
           const SizedBox(
-            height: 12,
+            height: 18,
           ),
-          TextField(
-            controller: _passwordControllers,
-            obscureText: true,
-            decoration: const InputDecoration(labelText: 'Password'),
-            style: const TextStyle(color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _passwordControllers,
+              obscureText: true,
+              decoration: const InputDecoration(
+                  labelText: 'Password',
+                  labelStyle: TextStyle(fontSize: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                  isDense: true,
+                  border: InputBorder.none),
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
           const SizedBox(
-            height: 12,
+            height: 18,
           ),
-          TextField(
-            controller: _confirmPasswordControllers,
-            obscureText: true,
-            decoration: const InputDecoration(labelText: 'Confirm Password'),
-            style: const TextStyle(color: Colors.white),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black)),
+            child: TextField(
+              controller: _confirmPasswordControllers,
+              obscureText: true,
+              decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                  labelStyle: TextStyle(fontSize: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 2),
+                  isDense: true,
+                  border: InputBorder.none),
+              style: const TextStyle(color: Colors.black),
+            ),
           ),
           const SizedBox(
             height: 24,
           ),
           ElevatedButton(
+              style: const ButtonStyle(
+                  backgroundColor: WidgetStatePropertyAll(Colors.black)),
               onPressed: signUp,
               child: const Text(
                 "Sign Up",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.white),
               ))
         ],
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
     );
   }
 }
