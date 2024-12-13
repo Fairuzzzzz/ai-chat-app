@@ -2,14 +2,22 @@ import 'package:aichatapp/pages/register_page.dart';
 import 'package:aichatapp/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class WelcomeloginPage extends StatefulWidget {
+  const WelcomeloginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<WelcomeloginPage> createState() => _WelcomeloginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _WelcomeloginPageState extends State<WelcomeloginPage> {
+  late bool _showWelcome = true;
+
+  void _goToLogin() {
+    setState(() {
+      _showWelcome = false;
+    });
+  }
+
   final authService = AuthService();
 
   final _emailControllers = TextEditingController();
@@ -43,7 +51,51 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+        body: _showWelcome ? _buildWelcomeContent() : _buildLoginContent());
+  }
+
+  Widget _buildWelcomeContent() {
+    return Container(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // TODO: Add Vector Animation
+          const Text(
+            "Hello, it's AI Ally!",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          const Text(
+            "Welcome to our AI assistant app!\nWe're excited to have you on\nboard. Here are a few steps to\nhelp you get started.",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                minimumSize: const Size(160, 50),
+              ),
+              onPressed: _goToLogin,
+              child: const Text(
+                "Next",
+                style: TextStyle(color: Colors.white),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoginContent() {
+    return Container(
+      key: const ValueKey('login'),
+      alignment: Alignment.center,
+      child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
         children: [
           const SizedBox(
@@ -52,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
           const Center(
             child: Text(
               'Welcome Back!',
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(
@@ -120,7 +172,6 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
-      backgroundColor: Colors.white,
     );
   }
 }
