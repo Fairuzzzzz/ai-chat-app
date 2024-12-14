@@ -51,7 +51,9 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: _showWelcome ? _buildWelcomeContent() : _buildLoginContent());
+        body: Center(
+            child:
+                _showWelcome ? _buildWelcomeContent() : _buildLoginContent()));
   }
 
   Widget _buildWelcomeContent() {
@@ -101,12 +103,6 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
           const SizedBox(
             height: 24,
           ),
-          const Center(
-            child: Text(
-              'Welcome Back!',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
           const SizedBox(
             height: 24,
           ),
@@ -137,6 +133,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
                 border: Border.all(color: Colors.black)),
             child: TextField(
               controller: _passwordControllers,
+              obscureText: true,
               decoration: const InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(fontSize: 14),
