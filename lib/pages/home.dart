@@ -68,9 +68,12 @@ class _HomeState extends State<Home> {
             itemCount: _messages.length,
             itemBuilder: (_, int index) => _messages[index],
           )),
-          const Divider(height: 1),
           Container(
-            decoration: BoxDecoration(color: Theme.of(context).cardColor),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
+            decoration: BoxDecoration(
+                color: const Color(0xFFF3F4F9),
+                borderRadius: BorderRadius.circular(26)),
             child: _buildTextComposer(),
           )
         ],
@@ -98,18 +101,24 @@ class _HomeState extends State<Home> {
           margin: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: <Widget>[
-              Flexible(
+              Expanded(
                   child: TextField(
                 controller: _textController,
                 decoration: const InputDecoration(
-                    hintText: 'Send a message...',
+                    hintText: 'Ask me anything...',
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     border: InputBorder.none),
                 style: const TextStyle(fontSize: 14),
               )),
-              IconButton(
+              TextButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all(const Color(0xFF5393f3))),
                   onPressed: () => _handleSubmitted(_textController.text),
-                  icon: const Icon(Icons.send))
+                  child: const Text(
+                    'Send',
+                    style: TextStyle(color: Colors.white),
+                  ))
             ],
           ),
         ));
