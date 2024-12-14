@@ -1,5 +1,6 @@
 import 'package:aichatapp/services/ai/ai_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:groq/groq.dart';
 
 class Home extends StatefulWidget {
@@ -29,18 +30,21 @@ class _HomeState extends State<Home> {
   }
 
   void _handleSubmitted(String text) async {
-    _textController.clear();
-    ChatMessage message = ChatMessage(
-      text: text,
-      isUserMessage: true,
-    );
-    setState(() {
-      _messages.add(message);
-    });
+    if (_textController.text.isNotEmpty) {
+      _textController.clear();
+      ChatMessage message = ChatMessage(
+        text: text,
+        isUserMessage: true,
+      );
 
-    _scrollToBottomWithDelay(const Duration(milliseconds: 200));
+      setState(() {
+        _messages.add(message);
+      });
 
-    _sendMessage(text);
+      _scrollToBottomWithDelay(const Duration(milliseconds: 200));
+
+      _sendMessage(text);
+    }
   }
 
   @override
@@ -53,6 +57,7 @@ class _HomeState extends State<Home> {
         ),
         centerTitle: true,
         actions: [_buildClearChatButton()], // TODO: Cant clear chat
+        backgroundColor: Colors.white,
       ),
       body: SafeArea(
           child: Column(
@@ -70,6 +75,7 @@ class _HomeState extends State<Home> {
           )
         ],
       )),
+      backgroundColor: Colors.white,
       drawer: const Drawer(
         child: Column(),
       ),
@@ -99,6 +105,7 @@ class _HomeState extends State<Home> {
                     hintText: 'Send a message...',
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     border: InputBorder.none),
+                style: const TextStyle(fontSize: 14),
               )),
               IconButton(
                   onPressed: () => _handleSubmitted(_textController.text),
@@ -120,9 +127,34 @@ class _HomeState extends State<Home> {
   _sendMessage(String text) async {
     try {
       GroqResponse? response = await _groq?.sendMessage(text);
+      String content = response?.choices.first.message.content ?? 'No Response';
+
+      // Parse content for code block
+      List<Widget> messageWidget = [];
+      RegExp codeBlockRegex = RegExp(r'```(?:.*\n)?([^`]+)```');
+
+      String remainingText = content;
+      int lastMatchEnd = 0;
+
+      for (Match match in codeBlockRegex.allMatches(content)) {
+        if (match.start > lastMatchEnd) {
+          String textBefore = content.substring(lastMatchEnd, match.start);
+          messageWidget.add(_processTextWithBold(textBefore));
+        }
+
+        // Add code block
+        String code = match.group(1)?.trim() ?? '';
+        messageWidget.add(CodeBlock(code: code));
+        lastMatchEnd = match.end;
+      }
+
+      if (lastMatchEnd < content.length) {
+        messageWidget
+            .add(_processTextWithBold(content.substring(lastMatchEnd)));
+      }
 
       ChatMessage responseMessage = ChatMessage(
-        text: response?.choices.first.message.content ?? 'No response',
+        widgets: messageWidget,
         isUserMessage: false,
       );
       setState(() {
@@ -137,13 +169,36 @@ class _HomeState extends State<Home> {
     }
     _scrollToBottomWithDelay(const Duration(milliseconds: 300));
   }
+
+  Widget _processTextWithBold(String text) {
+    RegExp boldPattern = RegExp(r'\*\*([^*]+)\*\*');
+    List<TextSpan> spans = [];
+    int lastMatchEnd = 0;
+
+    for (Match match in boldPattern.allMatches(text)) {
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
+      }
+      spans.add(TextSpan(
+          text: match.group(1),
+          style: const TextStyle(fontWeight: FontWeight.bold)));
+      lastMatchEnd = match.end;
+    }
+    if (lastMatchEnd < text.length) {
+      spans.add(TextSpan(text: text.substring(lastMatchEnd)));
+    }
+    return RichText(
+        text: TextSpan(
+            style: const TextStyle(color: Colors.black), children: spans));
+  }
 }
 
 class ChatMessage extends StatelessWidget {
-  final String text;
+  final String? text;
+  final List<Widget>? widgets;
   final bool isUserMessage;
   const ChatMessage(
-      {super.key, required this.text, this.isUserMessage = false});
+      {super.key, this.text, this.widgets, this.isUserMessage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -154,27 +209,22 @@ class ChatMessage extends StatelessWidget {
       crossAxisAlignment: crossAxisAlignment,
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-              color: isUserMessage
-                  ? theme.colorScheme.primaryContainer
-                  : theme.colorScheme.tertiaryContainer,
-              borderRadius: isUserMessage
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(0))
-                  : const BorderRadius.only(
-                      topLeft: Radius.circular(0),
-                      topRight: Radius.circular(8),
-                      bottomLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
-          child: Text(
-            text ?? '',
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
+              color: isUserMessage ? const Color(0xFF5393f3) : Colors.white,
+              borderRadius: BorderRadius.circular(20)),
+          child: widgets != null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widgets!,
+                )
+              : Text(text ?? '',
+                  style: isUserMessage
+                      ? const TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.white)
+                      : const TextStyle(
+                          fontWeight: FontWeight.w500, color: Colors.black)),
         )
       ],
     );
@@ -202,11 +252,49 @@ class ErrorMessage extends ChatMessage {
                   bottomLeft: Radius.circular(8),
                   bottomRight: Radius.circular(8))),
           child: Text(
-            text,
+            text ?? '',
             style: const TextStyle(fontWeight: FontWeight.w500),
           ),
         )
       ],
+    );
+  }
+}
+
+class CodeBlock extends StatelessWidget {
+  final String code;
+  const CodeBlock({super.key, required this.code});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+          color: const Color(0xFF1F294A),
+          borderRadius: BorderRadius.circular(16)),
+      child: Stack(
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 56),
+            child: SelectableText(
+              code,
+              style: const TextStyle(
+                  fontFamily: 'monospace', color: Colors.white, fontSize: 14),
+            ),
+          ),
+          Positioned(
+              right: 8,
+              bottom: 8,
+              child: IconButton(
+                  onPressed: () => Clipboard.setData(ClipboardData(text: code)),
+                  icon: const Icon(
+                    Icons.copy,
+                    color: Colors.white,
+                    size: 18,
+                  )))
+        ],
+      ),
     );
   }
 }
