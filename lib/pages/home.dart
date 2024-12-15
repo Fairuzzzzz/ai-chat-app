@@ -1,6 +1,7 @@
 import 'package:aichatapp/services/ai/ai_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groq/groq.dart';
 
 class Home extends StatefulWidget {
@@ -15,6 +16,7 @@ class _HomeState extends State<Home> {
   final TextEditingController _textController = TextEditingController();
   final List<ChatMessage> _messages = <ChatMessage>[];
   final ScrollController _scrollController = ScrollController();
+  bool _isBottom = true;
 
   Groq? _groq;
 
@@ -22,11 +24,26 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _initializeGroq();
+    _scrollController.addListener(_scrollListener);
   }
 
   void _initializeGroq() async {
     _groq = await groqInit();
     _groq?.startChat();
+  }
+
+  void _scrollListener() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (currentScroll >= (maxScroll - 50)) {
+      setState(() {
+        _isBottom = true;
+      });
+    } else {
+      setState(() {
+        _isBottom = false;
+      });
+    }
   }
 
   void _handleSubmitted(String text) async {
@@ -63,16 +80,39 @@ class _HomeState extends State<Home> {
           child: Column(
         children: <Widget>[
           Flexible(
-              child: ListView.builder(
-            controller: _scrollController,
-            itemCount: _messages.length,
-            itemBuilder: (_, int index) => _messages[index],
-          )),
+            child: Stack(
+              children: [
+                ListView.builder(
+                    controller: _scrollController,
+                    itemCount: _messages.length,
+                    itemBuilder: (_, int index) => _messages[index]),
+                Visibility(
+                  visible: !_isBottom,
+                  child: Positioned(
+                      right: 16,
+                      bottom: 16,
+                      child: ElevatedButton(
+                          onPressed: () => _scrollToBottomWithDelay(
+                              const Duration(milliseconds: 300)),
+                          style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(8),
+                              backgroundColor: Colors.blue),
+                          child: SvgPicture.asset(
+                            'assets/icons/ChevronDown.svg',
+                            color: Colors.white,
+                            height: 20,
+                            width: 20,
+                          ))),
+                )
+              ],
+            ),
+          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
             decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F9),
+                color: const Color(0xFFf1f1f1),
                 borderRadius: BorderRadius.circular(26)),
             child: _buildTextComposer(),
           )
@@ -100,15 +140,20 @@ class _HomeState extends State<Home> {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Expanded(
                   child: TextField(
                 controller: _textController,
+                maxLines: null,
+                minLines: 1,
+                textInputAction: TextInputAction.newline,
                 decoration: const InputDecoration(
                     hintText: 'Ask me anything...',
                     contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     border: InputBorder.none),
-                style: const TextStyle(fontSize: 14),
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
               )),
               TextButton(
                   style: ButtonStyle(
@@ -117,7 +162,8 @@ class _HomeState extends State<Home> {
                   onPressed: () => _handleSubmitted(_textController.text),
                   child: const Text(
                     'Send',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w500),
                   ))
             ],
           ),
@@ -228,12 +274,13 @@ class ChatMessage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: widgets!,
                 )
-              : Text(text ?? '',
-                  style: isUserMessage
-                      ? const TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.white)
-                      : const TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.black)),
+              : Text(
+                  text ?? '',
+                  style: TextStyle(
+                      color: isUserMessage ? Colors.white : Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500),
+                ),
         )
       ],
     );
