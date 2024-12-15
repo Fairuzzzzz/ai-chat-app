@@ -1,4 +1,5 @@
 import 'package:aichatapp/services/ai/ai_service.dart';
+import 'package:aichatapp/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,6 +18,7 @@ class _HomeState extends State<Home> {
   final List<ChatMessage> _messages = <ChatMessage>[];
   final ScrollController _scrollController = ScrollController();
   bool _isBottom = true;
+  final authService = AuthService();
 
   Groq? _groq;
 
@@ -64,65 +66,83 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void logout() async {
+    await authService.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Chat',
-          style: TextStyle(fontWeight: FontWeight.w500),
-        ),
-        centerTitle: true,
-        actions: [_buildClearChatButton()], // TODO: Cant clear chat
-        backgroundColor: Colors.white,
-      ),
-      body: SafeArea(
-          child: Column(
-        children: <Widget>[
-          Flexible(
-            child: Stack(
-              children: [
-                ListView.builder(
-                    controller: _scrollController,
-                    itemCount: _messages.length,
-                    itemBuilder: (_, int index) => _messages[index]),
-                Visibility(
-                  visible: !_isBottom,
-                  child: Positioned(
-                      right: 16,
-                      bottom: 16,
-                      child: ElevatedButton(
-                          onPressed: () => _scrollToBottomWithDelay(
-                              const Duration(milliseconds: 300)),
-                          style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(8),
-                              backgroundColor: Colors.blue),
-                          child: SvgPicture.asset(
-                            'assets/icons/ChevronDown.svg',
-                            color: Colors.white,
-                            height: 20,
-                            width: 20,
-                          ))),
-                )
-              ],
-            ),
+        appBar: AppBar(
+          toolbarHeight: 80,
+          title: const Text(
+            'Chat',
+            style: TextStyle(fontWeight: FontWeight.w500),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-            decoration: BoxDecoration(
-                color: const Color(0xFFf1f1f1),
-                borderRadius: BorderRadius.circular(26)),
-            child: _buildTextComposer(),
-          )
-        ],
-      )),
-      backgroundColor: Colors.white,
-      drawer: const Drawer(
-        child: Column(),
-      ),
-    );
+          centerTitle: true,
+          actions: [_buildClearChatButton()], // TODO: Cant clear chat
+          backgroundColor: Colors.white,
+        ),
+        body: SafeArea(
+            child: Column(
+          children: <Widget>[
+            Flexible(
+              child: Stack(
+                children: [
+                  ListView.builder(
+                      controller: _scrollController,
+                      itemCount: _messages.length,
+                      itemBuilder: (_, int index) => _messages[index]),
+                  Visibility(
+                    visible: !_isBottom,
+                    child: Positioned(
+                        right: 16,
+                        bottom: 16,
+                        child: ElevatedButton(
+                            onPressed: () => _scrollToBottomWithDelay(
+                                const Duration(milliseconds: 300)),
+                            style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                padding: const EdgeInsets.all(8),
+                                backgroundColor: Colors.blue),
+                            child: SvgPicture.asset(
+                              'assets/icons/ChevronDown.svg',
+                              color: Colors.white,
+                              height: 20,
+                              width: 20,
+                            ))),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFf1f1f1),
+                  borderRadius: BorderRadius.circular(40)),
+              child: _buildTextComposer(),
+            )
+          ],
+        )),
+        backgroundColor: Colors.white,
+        drawer: Drawer(
+          child: Column(
+            children: [
+              const Spacer(),
+              ListTile(
+                leading: const Icon(size: 20, Icons.logout),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
+                onTap: () {
+                  logout();
+                },
+              )
+            ],
+          ),
+        ));
   }
 
   Widget _buildClearChatButton() {
