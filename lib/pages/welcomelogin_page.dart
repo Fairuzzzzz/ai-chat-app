@@ -51,45 +51,114 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child:
-                _showWelcome ? _buildWelcomeContent() : _buildLoginContent()));
+      body: Stack(children: [
+        Positioned(
+          top: MediaQuery.of(context).size.height - 360 - 50,
+          left: MediaQuery.of(context).size.width / 26,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _showWelcome = true;
+              });
+            },
+            child: Visibility(
+              visible: !_showWelcome,
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.white),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                height: 360,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 1,
+                          offset: Offset(0, -1))
+                    ]),
+                child: _showWelcome
+                    ? _buildWelcomeContent()
+                    : _buildLoginContent())),
+      ]),
+      backgroundColor: const Color(0xFFD9E8FF),
+    );
   }
 
   Widget _buildWelcomeContent() {
-    return Container(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // TODO: Add Vector Animation
-          const Text(
-            "Hello, it's AI Ally!",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          const Text(
-            "Welcome to our AI assistant app!\nWe're excited to have you on\nboard. Here are a few steps to\nhelp you get started.",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.w400),
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                minimumSize: const Size(160, 50),
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(24),
+          child: const Column(
+            children: [
+              SizedBox(
+                height: 50,
               ),
-              onPressed: _goToLogin,
-              child: const Text(
-                "Next",
-                style: TextStyle(color: Colors.white),
-              )),
-        ],
-      ),
+              Center(
+                child: Text(
+                  "AI Assistant\nin your pocket",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.w500, height: 1.2),
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Center(
+                child: Text(
+                  "AI assistant can answer any\n of your questions. Just ask!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w400, height: 1.2),
+                ),
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          right: 20,
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _showWelcome = false;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Next',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -98,7 +167,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
       key: const ValueKey('login'),
       alignment: Alignment.center,
       child: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
           const SizedBox(
             height: 24,
@@ -110,7 +179,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _emailControllers,
               decoration: const InputDecoration(
@@ -120,7 +189,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
                 isDense: true,
                 border: InputBorder.none,
               ),
-              style: const TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           const SizedBox(
@@ -130,7 +199,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _passwordControllers,
               obscureText: true,
@@ -148,7 +217,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
           ),
           ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Colors.black)),
+                  backgroundColor: WidgetStateProperty.all(Colors.blue)),
               onPressed: login,
               child: const Text(
                 "Login",
