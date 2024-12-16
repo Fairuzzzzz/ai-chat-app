@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groq/groq.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {
   final String userId;
@@ -21,6 +22,8 @@ class _HomeState extends State<Home> {
   final authService = AuthService();
   List<Map<String, String>> messages = [];
   bool _isClear = true;
+  String? username;
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   Groq? _groq;
 
@@ -29,6 +32,7 @@ class _HomeState extends State<Home> {
     super.initState();
     _initializeGroq();
     _scrollController.addListener(_scrollListener);
+    _loadUsername();
   }
 
   void _initializeGroq() async {
@@ -70,6 +74,28 @@ class _HomeState extends State<Home> {
 
   void logout() async {
     await authService.signOut();
+  }
+
+  Future<void> _loadUsername() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      if (user != null) {
+        final data = await _supabase
+            .from('profiles')
+            .select('username')
+            .eq('id', user.id)
+            .single();
+        setState(() {
+          username = data['username'];
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          username = 'User';
+        });
+      }
+    }
   }
 
   @override
@@ -131,6 +157,20 @@ class _HomeState extends State<Home> {
         drawer: Drawer(
           child: Column(
             children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 70),
+                child: CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.grey,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                username ?? 'User',
+                style: const TextStyle(fontSize: 16),
+              ),
               const Spacer(),
               ListTile(
                 leading: const Icon(size: 20, Icons.logout),

@@ -69,7 +69,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
                 decoration: const BoxDecoration(
                     shape: BoxShape.circle, color: Colors.white),
                 child: const Icon(
-                  Icons.arrow_back,
+                  Icons.arrow_back_rounded,
                   color: Colors.blue,
                 ),
               ),
@@ -126,7 +126,10 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
                   "AI assistant can answer any\n of your questions. Just ask!",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w400, height: 1.2),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
+                      color: Colors.grey),
                 ),
               )
             ],
@@ -136,27 +139,23 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
           bottom: 20,
           right: 20,
           child: ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _showWelcome = false;
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              backgroundColor: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+              onPressed: () {
+                setState(() {
+                  _showWelcome = false;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            ),
-            child: const Text(
-              'Next',
-              style: TextStyle(
+              child: const Icon(
+                Icons.arrow_forward_rounded,
                 color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+              )),
         ),
       ],
     );
@@ -185,11 +184,11 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
               decoration: const InputDecoration(
                 contentPadding: EdgeInsets.symmetric(horizontal: 2),
                 labelText: 'Email',
-                labelStyle: TextStyle(fontSize: 14),
+                labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                 isDense: true,
                 border: InputBorder.none,
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.black),
             ),
           ),
           const SizedBox(
@@ -205,7 +204,7 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
               obscureText: true,
               decoration: const InputDecoration(
                   labelText: 'Password',
-                  labelStyle: TextStyle(fontSize: 14),
+                  labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   contentPadding: EdgeInsets.symmetric(horizontal: 2),
                   isDense: true,
                   border: InputBorder.none),

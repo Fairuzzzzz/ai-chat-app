@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
-          color: Colors.black,
+          color: Colors.blue,
           size: 20,
         ),
         title: const Text(
@@ -67,12 +67,12 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _usernameControllers,
               decoration: const InputDecoration(
                   labelText: 'Username',
-                  labelStyle: TextStyle(fontSize: 14),
+                  labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   contentPadding: EdgeInsets.symmetric(horizontal: 2),
                   isDense: true,
                   border: InputBorder.none),
@@ -86,12 +86,12 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _emailControllers,
               decoration: const InputDecoration(
                   labelText: 'Email',
-                  labelStyle: TextStyle(fontSize: 14),
+                  labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   contentPadding: EdgeInsets.symmetric(horizontal: 2),
                   isDense: true,
                   border: InputBorder.none),
@@ -105,13 +105,13 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _passwordControllers,
               obscureText: true,
               decoration: const InputDecoration(
                   labelText: 'Password',
-                  labelStyle: TextStyle(fontSize: 14),
+                  labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   contentPadding: EdgeInsets.symmetric(horizontal: 2),
                   isDense: true,
                   border: InputBorder.none),
@@ -125,13 +125,13 @@ class _RegisterPageState extends State<RegisterPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black)),
+                border: Border.all(color: Colors.blue)),
             child: TextField(
               controller: _confirmPasswordControllers,
               obscureText: true,
               decoration: const InputDecoration(
                   labelText: 'Confirm Password',
-                  labelStyle: TextStyle(fontSize: 14),
+                  labelStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   contentPadding: EdgeInsets.symmetric(horizontal: 2),
                   isDense: true,
                   border: InputBorder.none),
@@ -143,7 +143,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           ElevatedButton(
               style: const ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Colors.black)),
+                  backgroundColor: WidgetStatePropertyAll(Colors.blue)),
               onPressed: signUp,
               child: const Text(
                 "Sign Up",
