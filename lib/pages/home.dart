@@ -19,6 +19,8 @@ class _HomeState extends State<Home> {
   final ScrollController _scrollController = ScrollController();
   bool _isBottom = true;
   final authService = AuthService();
+  List<Map<String, String>> messages = [];
+  bool _isClear = true;
 
   Groq? _groq;
 
@@ -94,7 +96,7 @@ class _HomeState extends State<Home> {
                       itemCount: _messages.length,
                       itemBuilder: (_, int index) => _messages[index]),
                   Visibility(
-                    visible: !_isBottom,
+                    visible: _isClear ? !_isBottom : _isBottom,
                     child: Positioned(
                         right: 16,
                         bottom: 16,
@@ -148,9 +150,23 @@ class _HomeState extends State<Home> {
   Widget _buildClearChatButton() {
     return IconButton(
       onPressed: () {
-        _groq?.clearChat();
+        setState(() {
+          _messages.clear();
+          _groq?.clearChat();
+          _isClear = true;
+          _isBottom = false;
+        });
+
+        Future.delayed(const Duration(microseconds: 300), () {
+          if (mounted) {
+            setState(() {
+              _isClear = false;
+            });
+          }
+        });
       },
       icon: const Icon(Icons.delete),
+      tooltip: 'Clear Chat',
     );
   }
 
