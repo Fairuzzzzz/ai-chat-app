@@ -12,12 +12,6 @@ class WelcomeloginPage extends StatefulWidget {
 class _WelcomeloginPageState extends State<WelcomeloginPage> {
   late bool _showWelcome = true;
 
-  void _goToLogin() {
-    setState(() {
-      _showWelcome = false;
-    });
-  }
-
   final authService = AuthService();
 
   final _emailControllers = TextEditingController();

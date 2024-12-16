@@ -98,6 +98,13 @@ class _HomeState extends State<Home> {
     }
   }
 
+  String get getUsernameFirstLetter {
+    if (username == null || username!.isEmpty) {
+      return 'U';
+    }
+    return username![0].toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,12 +164,15 @@ class _HomeState extends State<Home> {
         drawer: Drawer(
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 70),
+              Padding(
+                padding: const EdgeInsets.only(top: 70),
                 child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey,
-                ),
+                    radius: 30,
+                    backgroundColor: Colors.blue,
+                    child: Text(
+                      getUsernameFirstLetter,
+                      style: const TextStyle(color: Colors.white),
+                    )),
               ),
               const SizedBox(
                 height: 20,
@@ -170,6 +180,15 @@ class _HomeState extends State<Home> {
               Text(
                 username ?? 'User',
                 style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const ListTile(
+                title: Text(
+                  'Chat',
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
               const Spacer(),
               ListTile(
@@ -324,7 +343,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-class ChatMessage extends StatelessWidget {
+class ChatMessage extends StatefulWidget {
   final String? text;
   final List<Widget>? widgets;
   final bool isUserMessage;
@@ -332,33 +351,77 @@ class ChatMessage extends StatelessWidget {
       {super.key, this.text, this.widgets, this.isUserMessage = false});
 
   @override
+  State<ChatMessage> createState() => _ChatMessageState();
+}
+
+class _ChatMessageState extends State<ChatMessage>
+    with TickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0.0, -0.5), end: Offset.zero).animate(
+            CurvedAnimation(
+                parent: _animationController, curve: Curves.easeOut));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final CrossAxisAlignment crossAxisAlignment =
-        isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    return Column(
-      crossAxisAlignment: crossAxisAlignment,
-      children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-              color: isUserMessage ? const Color(0xFF5393f3) : Colors.white,
-              borderRadius: BorderRadius.circular(20)),
-          child: widgets != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: widgets!,
-                )
-              : Text(
-                  text ?? '',
-                  style: TextStyle(
-                      color: isUserMessage ? Colors.white : Colors.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500),
-                ),
-        )
-      ],
+    final CrossAxisAlignment crossAxisAlignment = widget.isUserMessage
+        ? CrossAxisAlignment.end
+        : CrossAxisAlignment.start;
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  color: widget.isUserMessage
+                      ? const Color(0xFF5393f3)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(20)),
+              child: widget.widgets != null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.widgets!,
+                    )
+                  : Text(
+                      widget.text ?? '',
+                      style: TextStyle(
+                          color: widget.isUserMessage
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
