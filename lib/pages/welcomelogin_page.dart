@@ -10,7 +10,7 @@ class WelcomeloginPage extends StatefulWidget {
 }
 
 class _WelcomeloginPageState extends State<WelcomeloginPage> {
-  late bool _showWelcome = true;
+  bool _showWelcome = true;
 
   final authService = AuthService();
 
