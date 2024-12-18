@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
   bool _isBottom = true;
   final authService = AuthService();
   List<Map<String, String>> messages = [];
-  bool _isClear = true;
+  final bool _isClear = true;
   String? username;
   final SupabaseClient _supabase = Supabase.instance.client;
   final ChatService _chatService = ChatService();
@@ -170,7 +170,7 @@ class _HomeState extends State<Home> {
       });
       Navigator.pop(context);
     } catch (e) {
-      print('Error loading session messages: $e');
+      throw Exception('Error load session messages');
     }
   }
 
@@ -236,16 +236,23 @@ class _HomeState extends State<Home> {
                                   _createNewSession();
                                 });
                               }
-                              _loadChatSession();
+
+                              // Reload chat session
+                              final updatedSession = await _chatService
+                                  .getChatSession(widget.userId);
+                              if (mounted) {
+                                setState(() {
+                                  chatSession = updatedSession;
+                                });
+                              }
                             } catch (e) {
-                              print('Error deleting session: $e');
+                              throw Exception('Error deleting session');
                             }
                           },
                           icon: const Icon(Icons.delete, size: 20)),
                       onTap: () => _loadSessionMessages(session['session_id']),
                     );
                   })),
-          const Spacer(),
           ListTile(
             leading: const Icon(size: 20, Icons.logout),
             title: const Text(
@@ -331,31 +338,6 @@ class _HomeState extends State<Home> {
       },
       icon: const Icon(Icons.add),
       tooltip: 'New Chat',
-    );
-  }
-
-  Widget _buildClearChatButton() {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          _messages.clear();
-          _groq?.clearChat();
-          _isClear = true;
-          _isBottom = false;
-        });
-        _createNewSession();
-        _loadChatSession();
-
-        Future.delayed(const Duration(microseconds: 300), () {
-          if (mounted) {
-            setState(() {
-              _isClear = false;
-            });
-          }
-        });
-      },
-      icon: const Icon(Icons.delete),
-      tooltip: 'Clear Chat',
     );
   }
 

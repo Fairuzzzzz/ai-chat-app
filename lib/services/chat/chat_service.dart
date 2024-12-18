@@ -58,21 +58,15 @@ class ChatService {
       throw Exception('Failed to get chat history: $e');
     }
   }
-  
-  // TODO: Fix this. Cannot update deleted_at data.
+
   Future<void> deleteSession(String userId, String sessionId) async {
     try {
       final updatedData = {'deleted_at': DateTime.now().toIso8601String()};
-      final result = await _supabase
+      await _supabase
           .from('chat_history')
           .update(updatedData)
-          .eq('user_id', userId)
-          .eq('session_id', sessionId)
-          .select();
-
-      print('Delete operation completed. Result : $result');
+          .match({'user_id': userId, 'session_id': sessionId});
     } catch (e) {
-      print('Error details: $e');
       throw Exception('Failed to delete session: $e');
     }
   }
