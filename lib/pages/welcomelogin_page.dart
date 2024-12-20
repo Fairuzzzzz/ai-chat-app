@@ -47,6 +47,15 @@ class _WelcomeloginPageState extends State<WelcomeloginPage> {
     return Scaffold(
       body: Stack(children: [
         Positioned(
+          top: 80,
+          left: 0,
+          right: 0,
+          child: Image.asset(
+            'assets/images/Hand.png',
+            scale: 5,
+          ),
+        ),
+        Positioned(
           top: MediaQuery.of(context).size.height - 360 - 50,
           left: MediaQuery.of(context).size.width / 26,
           child: GestureDetector(
