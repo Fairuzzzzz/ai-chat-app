@@ -4,6 +4,8 @@
 
 AI Ally is a Flutter-based mobile application that provides an interactive chat interface powered by the Groq AI model. The application allows users to have conversations with an AI assistant while maintaining chat history and session management.
 
+![image alt](https://github.com/Fairuzzzzz/ai-chat-app/blob/main/screenshot/Frame.png?raw=true)
+
 ## Features
 
 - User Authentication (Sign up/Login)
